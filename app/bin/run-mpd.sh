@@ -35,9 +35,17 @@ if [ -z "${radio_name}" ]; then
 fi
 echo "MPD_RADIO_STREAMER_NAME = [$radio_name]"
 
+httpd_format=$MPD_RADIO_STREAMER_HTTPD_FORMAT
+
 sed -i 's/MPD_RADIO_STREAMER_HTTPD_NAME/'"$httpd_name"'/g' $MPD_CONFIG_FILE
 sed -i 's/MPD_RADIO_STREAMER_HTTPD_ALWAYS_ON/'"$httpd_always_on"'/g' $MPD_CONFIG_FILE
 sed -i 's/MPD_RADIO_STREAMER_HTTPD_TAGS/'"$httpd_tags"'/g' $MPD_CONFIG_FILE
+
+if ! [ -z "${httpd_format}" ]; then
+  sed -i 's/#format/'"format"'/g' $MPD_CONFIG_FILE
+  sed -i 's/MPD_RADIO_STREAMER_HTTPD_FORMAT/'"$httpd_format"'/g' $MPD_CONFIG_FILE
+fi
+
 
 cat $MPD_CONFIG_FILE
 
