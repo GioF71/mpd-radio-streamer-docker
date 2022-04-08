@@ -17,6 +17,7 @@ else
   fi
 fi
 echo "MPD_RADIO_STREAMER_HTTPD_ALWAYS_ON = [$httpd_always_on]"
+
 httpd_tags=$MPD_RADIO_STREAMER_HTTPD_TAGS
 if [ -z "${httpd_tags}" ]; then
   httpd_tags="yes"
@@ -29,6 +30,7 @@ else
   fi
 fi
 echo "MPD_RADIO_STREAMER_HTTPD_TAGS = [$httpd_tags]"
+
 radio_name=$MPD_RADIO_STREAMER_NAME
 if [ -z "${radio_name}" ]; then
   radio_name="Radio"
@@ -42,10 +44,9 @@ sed -i 's/MPD_RADIO_STREAMER_HTTPD_ALWAYS_ON/'"$httpd_always_on"'/g' $MPD_CONFIG
 sed -i 's/MPD_RADIO_STREAMER_HTTPD_TAGS/'"$httpd_tags"'/g' $MPD_CONFIG_FILE
 
 if ! [ -z "${httpd_format}" ]; then
-  sed -i 's/#format/'"format"'/g' $MPD_CONFIG_FILE
+  sed -i 's/#format/'"format "'/g' $MPD_CONFIG_FILE
   sed -i 's/MPD_RADIO_STREAMER_HTTPD_FORMAT/'"$httpd_format"'/g' $MPD_CONFIG_FILE
 fi
-
 
 cat $MPD_CONFIG_FILE
 
@@ -75,11 +76,13 @@ echo "Setting repeat mode ..."
 echo "Waiting ..."
 sleep 1
 
-echo "Playing ..."
-/usr/bin/mpc play
-
+echo "Press [CTRL+C] to stop..."
+counter=0
 while true
 do
-	echo "Press [CTRL+C] to stop..."
-	sleep 864000
+	counter=counter+1
+  if ! mpc status | awk 'NR==2' | grep playing > /dev/null; then 
+    mpc play
+  fi
+	sleep 5
 done

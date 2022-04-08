@@ -36,9 +36,10 @@ This command will output one line if the current user does belong to the "docker
 The Dockerfile and the included scripts have been tested on the following distros:
 
 - Manjaro Linux with Gnome (amd64)
+- Raspberry Pi 3/4 buster (arm32)
 
 As I test the Dockerfile on more platforms, I will update this list.
-I am maintaining images for arm, but I have not tried to deploy the image on a Raspberry Pi or on a Asus Tinkerboard yet.
+These are the platforms I tested, but I believe the image would work also on arm64.
 
 ## Get the image
 
@@ -73,13 +74,13 @@ Port|Description
 
 ```text
 docker run \
-    --name mpd-deejay \
-    --rm -it \
-    -p 8010:8000 \
-    -e MPD_RADIO_STREAMER_URL=http://myradio.com \
-    -e MPD_RADIO_STREAMER_NAME=MyRadio \
-    -e MPD_RADIO_STREAMER_HTTPD_ALWAYS_ON=n \
-    giof71/mpd-radio-streamer
+  --name mpd-deejay \
+  --rm -it \
+  -p 8000:8000 \
+  -e MPD_RADIO_STREAMER_URL=http://myradio.com \
+  -e MPD_RADIO_STREAMER_NAME=MyRadio \
+  -e MPD_RADIO_STREAMER_HTTPD_ALWAYS_ON=n \
+  giof71/mpd-radio-streamer
 ```
 
 ### Sample docker-compose
@@ -93,13 +94,16 @@ services:
     image: giof71/mpd-radio-streamer
     container_name: mpd-streamer-radio-deejay
     ports:
-      - 8010:8000
+      - 8000:8000
     environment:
       - MPD_RADIO_STREAMER_URL=http://myradio.com
       - MPD_RADIO_STREAMER_NAME=MyRadio
       - MPD_RADIO_STREAMER_HTTPD_ALWAYS_ON=yes
       - MPD_RADIO_STREAMER_HTTPD_TAGS=yes
 ```
+
+You can then listen at the url `http://your-pc-ip-address-or-hostname:8000`.  
+If you have a domain name you own, you can also consider creating a HTTPS termination, so maybe you can obtain an easy to remember URL, like `https://myradio.yourdomain.com` without an explicit port number.
 
 ## Build
 
