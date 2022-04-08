@@ -1,0 +1,60 @@
+name: Publish multi-arch Docker images
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                base: [ 'giof71/mpd-base-image:focal' ]
+                
+        steps:
+        -
+            name: Checkout
+            uses: actions/checkout@v2
+        -
+            name: Set Release Tag
+            run: |
+                date=$(date '+%Y-%m-%d')
+                distro_id="focal"
+                mpd_version="mpd-0.21.20";
+                tags="${{secrets.DOCKER_USERNAME}}/mpd-radio-streamer:${mpd_version}-${distro_id}-${date}"
+                tags="${tags},${{secrets.DOCKER_USERNAME}}/mpd-radio-streamer:${mpd_version}-${distro_id}"
+                tags="${tags},${{secrets.DOCKER_USERNAME}}/mpd-radio-streamer:${mpd_version}-${date}"
+                tags="${tags},${{secrets.DOCKER_USERNAME}}/mpd-radio-streamer:${mpd_version}"
+                tags="${tags},${{secrets.DOCKER_USERNAME}}/mpd-radio-streamer:${distro_id}-${date}"
+                tags="${tags},${{secrets.DOCKER_USERNAME}}/mpd-radio-streamer:${distro_id}"
+                tags="${tags},${{secrets.DOCKER_USERNAME}}/mpd-radio-streamer:${date}"
+                tags="${tags},${{secrets.DOCKER_USERNAME}}/mpd-radio-streamer:stable"
+                tags="${tags},${{secrets.DOCKER_USERNAME}}/mpd-radio-streamer:latest"
+                echo "RELEASE_TAGS=${tags}" >> $GITHUB_ENV
+        -
+            name: Set up QEMU
+            uses: docker/setup-qemu-action@v1
+            with:
+                platforms: all
+        -
+            name: Set up Docker Buildx
+            id: buildx
+            uses: docker/setup-buildx-action@v1
+        -
+            name: Login to DockerHub
+            uses: docker/login-action@v1
+            with:
+                username: ${{ secrets.DOCKER_USERNAME }}
+                password: ${{ secrets.DOCKER_PASSWORD }}
+        -
+            name: Build and push
+            uses: docker/build-push-action@v2
+            with:
+                context: .
+                build-args: |
+                    BASE_IMAGE=${{ matrix.base }}
+                platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
+                push: true
+                tags: ${{ env.RELEASE_TAGS }}
