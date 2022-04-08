@@ -75,8 +75,8 @@ Port|Description
         --name mpd-deejay \
         --rm -it \
         -p 6610:6600 -p 8010:8000 \
-        -e MPD_RADIO_STREAMER_URL="http://myradio.com" \
-        -e MPD_RADIO_STREAMER_NAME="MyRadio" \
+        -e MPD_RADIO_STREAMER_URL=http://myradio.com \
+        -e MPD_RADIO_STREAMER_NAME=MyRadio \
         -e MPD_RADIO_STREAMER_HTTPD_ALWAYS_ON=n \
         giof71/mpd-radio-streamer
 ```
@@ -84,6 +84,21 @@ Port|Description
 ### Sample docker-compose
 
 ```text
+---
+version: '3'
+
+services:
+  mpd-streamer-radio-deejay:
+    image: giof71/mpd-radio-streamer
+    container_name: mpd-streamer-radio-deejay
+    ports:
+      - 8010:8000
+      - 6610:6600
+    environment:
+      - MPD_RADIO_STREAMER_URL=http://myradio.com
+      - MPD_RADIO_STREAMER_NAME=MyRadio
+      - MPD_RADIO_STREAMER_HTTPD_ALWAYS_ON=yes
+      - MPD_RADIO_STREAMER_HTTPD_TAGS=yes
 ```
 
 ## Build
