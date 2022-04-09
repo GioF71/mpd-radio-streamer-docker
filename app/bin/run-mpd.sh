@@ -1,7 +1,12 @@
 #!/bin/bash
 
+ASSETS_PATH=/app/assets
+PLAYLIST_FILE_NAME=radio.m3u
 MPD_CONFIG_FILE=/etc/mpd-radio-streamer.conf
-PLAYLIST_FILE=/app/assets/radio.m3u
+PLAYLIST_BUILD_FULL_PATH="$ASSETS_PATH/$PLAYLIST_FILE_NAME"
+PLAYLIST_PATH=/playlists
+
+echo "PLAYLIST_BUILD_FULL_PATH = [$PLAYLIST_BUILD_FULL_PATH]"
 
 cat /app/assets/mpd-template.conf > $MPD_CONFIG_FILE
 
@@ -54,15 +59,15 @@ echo "About to sleep for $STARTUP_DELAY_SEC second(s)"
 sleep $STARTUP_DELAY_SEC
 
 echo "Creating playlist file"
-echo $MPD_RADIO_STREAMER_URL#$radio_name > $PLAYLIST_FILE
-chmod 644 $PLAYLIST_FILE
+echo $MPD_RADIO_STREAMER_URL#$radio_name > $PLAYLIST_BUILD_FULL_PATH
+chmod 644 $PLAYLIST_BUILD_FULL_PATH
 
 echo "Config file [$MPD_CONFIG_FILE]"
 cat $MPD_CONFIG_FILE
 
-cp $PLAYLIST_FILE /playlists
-echo "Playlist"
-cat /playlists/radio.m3u
+cp $PLAYLIST_BUILD_FULL_PATH $PLAYLIST_PATH
+echo "Playlist:"
+cat $PLAYLIST_PATH/$PLAYLIST_FILE_NAME
 
 echo "Ready to start."
 /usr/bin/mpd $MPD_CONFIG_FILE
@@ -80,9 +85,9 @@ echo "Press [CTRL+C] to stop..."
 counter=0
 while true
 do
-	counter=counter+1
+  counter=counter+1
   if ! mpc status | awk 'NR==2' | grep playing > /dev/null; then 
     mpc play
   fi
-	sleep 5
+  sleep 5
 done

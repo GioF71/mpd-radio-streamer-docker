@@ -118,4 +118,6 @@ Just be careful to use the tag you have built.
 
 Release Date|Major Changes
 :---|:---
+2022-04-09|Removed redundancies in start script
+2022-04-09|mpd-base-image recently bumped
 2022-04-08|Initial release
