@@ -1,4 +1,6 @@
-# mpd-radio-streamer-docker - a Docker image for a simple mpd radio streamer
+# mpd-radio-streamer-docker
+
+A docker image for a simple mpd radio streamer
 
 ## Available Archs on Docker Hub
 
@@ -58,7 +60,7 @@ You may want to pull the "stable" image as opposed to the "latest".
 Variable|Default|Notes
 :---|:---:|:---
 MPD_RADIO_STREAMER_URL||The URL of your radio (this is mandatory)
-MPD_RADIO_STREAMER_URL|Radio|The name of the Radio
+MPD_RADIO_STREAMER_NAME|Radio|The name of the Radio
 MPD_RADIO_STREAMER_HTTPD_ALWAYS_ON|yes|If set to yes, then MPD attempts to keep this audio output always open. This may be useful for streaming servers, when you don’t want to disconnect all listeners even when playback is accidentally stopped.
 MPD_RADIO_STREAMER_HTTPD_TAGS|yes|If set to no, then MPD will not send tags to this output. This is only useful for output plugins that can receive tags, for example the httpd output plugin.
 MPD_RADIO_STREAMER_HTTPD_FORMAT||The output format (for example, 44100:16:2 for cd quality audio format)
